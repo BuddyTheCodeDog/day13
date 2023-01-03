@@ -1,64 +1,69 @@
 import axios from "axios";
-const Moralis = require("moralis").default;
-const { EvmChain } = require("@moralisweb3/common-evm-utils");
 
-// we use `import axios from "axios"` which is another way of saying `const axios = require("axios")`
-// it is jsut better supported in the browser!
-//0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB
+
+
 const submitButton = document.getElementById("submit-button");
 
 submitButton.addEventListener("click", function(){
     const addressInput = document.getElementById("address-input");
     console.log(addressInput.value);
-    Moralis.start({
-        apiKey: "PWYYxUpvzo6Nw6M3GYkU9NRnQexXm4wFFpaO60upGlLZWlLXwmv7EcCVI2fNBtaY",
-        // ...and any other configuration
-      }).then(() => {
-        const address = "0x7B2c85591FD2ed6B33E6C956601b86d0c8230ada";
-      
-        const chain = EvmChain.ETHEREUM;
+
+    const apiKey ="kk09WTbfHugG0JEXeKiRzQGezPdT6R_I";
+    const baseURL = `https://eth-mainnet.g.alchemy.com/nft/v2/${apiKey}/getNFTs/`;
+    const ownerAddr = addressInput.value; //addressInput.value;
+
+    var config = {
+        method: 'get',
+        url: `${baseURL}?owner=${ownerAddr}`
+    };
+
+    axios(config).then(function(response){
+        console.log(response.data);
+        const grid = document.querySelector('.grid');
+        grid.innerHTML = '';
         
-      
-        return Moralis.EvmApi.nft.getWalletNFTs({
-            address,
-            chain,
-            
-        });
-      }).then((response) => {
-        console.log(response.toJSON());
-        const listResults = response.toJSON();
-        console.log(listResults);
-        console.log(listResults.result);
 
-        for(let i=0; i< listResults.result.length; i++){
-            const nft = listResults.result[i];
-            const nftName = nft.name;
-            console.log(nftName);
-            const nftBox = document.createElement('div');
-            nftBox.className = 'nft-box';
-            nftBox.innerHTML = nftName;
-            document.body.appendChild(nftBox);
+        for(let i=0; i< response.data.ownedNfts.length; i++){
+          const nft = response.data.ownedNfts[i];
+          const nftName = nft.title;
+          console.log(nftName);
+          const nftBox = document.createElement('div');
+          nftBox.className = 'grid-item';
+          nftBox.innerHTML = nftName;
 
-            const metaData = JSON.parse(nft.metadata);
-            console.log(metaData);
+          const nftBalanceBox = document.createElement('div');
+          nftBalanceBox.className = 'grid-item-balance';
+          const nftBalance = nft.balance;
+          nftBalanceBox.innerHTML = `Owned: ${nftBalance}`;
+
+          const nftDescBox = document.createElement('span');
+          nftDescBox.className = 'grid-item-description';
+          const nftDesc = nft.description;
+          nftDescBox.innerHTML = nftDesc;
+
+          console.log(nft.media[0].raw);
+          const imgElement = document.createElement('img');
+          imgElement.className = 'grid-item-image';
+          imgElement.width = "200"; // sets the width to 200 pixels
+          imgElement.height = "200"; // sets the height to 200 pixels
+          let urlImage = nft.media[0].gateway;
+
+          if (urlImage.startsWith("ipfs://")) {
+            urlImage = "https://ipfs.io/ipfs/" + urlImage.slice(8);
+          }
+          
+        
+          imgElement.src = urlImage;
+          nftBox.appendChild(imgElement);
+          nftBox.appendChild(nftBalanceBox);
+          nftBox.appendChild(nftDescBox);
+          grid.appendChild(nftBox);
         }
-
-
-
       });
-    
-
-    //   const apiKey = "";
-    //   const baseURL = ``;
-    //   const ownerAddr = address;
-
-    //   var config = {
-    //     method: 'get',
-    //     url: `${baseURL}?owner=${ownerAddr}`
-    //   };
-
-    //   axios.get(url).then(function(response){
-    //     console.log(response.data);
-    //   });
+      
+      
+      
+       
 });
 
+    

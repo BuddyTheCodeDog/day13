@@ -1,72 +1,12 @@
 #body {
-    background-color: rgba(177, 248, 130, 0.438);
+    background-color:#FBA1AD;
     transition: background-color 0.5s;
+    font-family: 'Ubuntu', sans-serif;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: auto;
-    grid-gap: 10px;
-    background-color: rgb(255, 255, 248);
-    
-  }
+
+
   
-  .grid-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    border: 1px solid black;
-    background-color: aqua;
-    transition: transform 1s;
-    
-    
-  }
-
-  .grid-item:active{
-    transform: scale(3) rotate(720deg);
-    background-color:rgb(238, 255, 0)
-  }
-  
-  .grid-item-image {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .grid-item-text {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-
-  .grid-item-balance {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-    position: relative;
-    bottom: 0px;
-  }
-
-  #submit-button{
-    background-color: deeppink;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-    border-radius: 10px;
-    font-weight: bold;
-  }
-
-  #spanid{
-    font-size: 18px;
-    
-  }
-
-  #h1{
-    text-align: center;
-    text-shadow: 0 10px 10px rgba(0, 0, 0, 0.19), 0 2px 2px rgba(0, 0, 0, 0.23);
-    text-decoration: underline wavy;
-
-  }
 
   #header{
     background-color: black;
@@ -80,6 +20,115 @@
     
   }
 
-  .grid-item-description{
-    font-size: 1px;
+  
+#nft-header {
+  font-size: 24px;
+}
+
+  .container {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0px 0px 0px;
+}
+
+.max-width {
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+img {
+  max-width: 100%;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  max-height: 100%;
+}
+
+.nft-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nft-row h3 {
+  display: flex;
+  font-size: 14px;
+  font-weight: 800;
+  margin: 8px;
+}
+
+.nft-row .item-balance {
+  margin: 8px;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.nft-col {
+  width: 23%;
+  margin: 7px 8px;
+  background-color: #FECAD1;
+  border-radius: 6px;
+  
+}
+
+.image-container {
+  margin: 10px 0px 0px 0px;
+ 
+}
+
+.nft-bottom-container{
+  margin: 0px;
+  
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  background-color: #FECAD1;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px 0px 0px;
+}
+
+.input-default {
+  padding: 17px 20px;
+  min-width: 350px;
+  background: #FFF3F5;
+  border-bottom-left-radius: 8px;
+  border-top-left-radius: 8px;
+  border: 1px solid #2c2c2c;
+  color: rgb(0, 0, 0);
+  height: 24px;
+}
+
+.input-default:focus {
+  border: 1px solid #F87C8D;
+}
+
+
+.button-default {
+  padding: 3px 30px;
+  background: #F87C8D;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin: 0px 0px 0px 0px;
+  font-weight: 1000;
+  border-color: #F87C8D;
+  font-size: 13px;
+  font-stretch: wider;
+}
+
+@media screen and (max-width: 600px) {
+  .nft-row {
+      display: flex;
+      flex-direction: column;
+      align-content: center;
   }
+
+  .nft-col {
+      width: 70%;
+  }
+  .input-default {
+      min-width: 70px;
+  }
+}
