@@ -4,7 +4,16 @@
     font-family: 'Ubuntu', sans-serif;
 }
 
+#audio-container{
+  display: flex;
+  justify-content: right;
+}
 
+#audio-container audio {
+  width: 300px;
+  height: 32px;
+  
+}
 
   
 
@@ -37,11 +46,28 @@
   overflow: hidden;
 }
 
-img {
+.img {
   max-width: 100%;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   max-height: 100%;
+  object-fit: contain;
+}
+
+/* .img-cell {
+  max-width: 100%;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  max-height: 100%;
+  object-fit: contain;
+} */
+
+.img-cell {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  object-fit: contain; /* Resize the images to fit within the img-cell element while preserving their aspect ratio */
+  overflow: hidden;
 }
 
 .nft-row {
@@ -116,6 +142,29 @@ img {
   border-color: #F87C8D;
   font-size: 13px;
   font-stretch: wider;
+  
+
+}
+
+#spinner-container{
+  margin: 40px;
+}
+
+.spinner {
+  display: none; /* Initially hidden */
+  justify-content: center;
+  margin: 0 auto;
+  border: 20px solid #FFF3F5; 
+  border-top: 20px solid #F87C8D; 
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @media screen and (max-width: 600px) {

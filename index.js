@@ -1,12 +1,45 @@
 import axios from "axios";
 
 
+const audioElement = document.createElement('audio');
+const audioContainer = document.getElementById('audio-container');
+
+// Set the src attribute of the audio element to the URL of the MP3 file
+audioElement.src = 'https://cdn.pixabay.com/download/audio/2021/04/07/audio_8ed06844ef.mp3?filename=nightlife-michael-kobrin-95bpm-3783.mp3';
+
+// Set the controls attribute of the audio element to true
+audioElement.controls = true;
+audioElement.autoplay = true;
+audioElement.loop = true;
+
+// Append the audio element to the body of the page
+audioContainer.appendChild(audioElement);
+
+
+
+
+
+
 
 const submitButton = document.getElementById("submit-button");
+const spinner = document.getElementById('spinner');
+const spinnerContainer = document.getElementById('spinner-container');
+const nftImagesContainer = document.getElementById("nft-images-container");
+
 
 submitButton.addEventListener("click", function(){
+  while (nftImagesContainer.firstChild) {
+    nftImagesContainer.removeChild(nftImagesContainer.firstChild);
+    console.log("testing");
+  }
+
+  spinnerContainer.style.display= 'block';
+  submitButton.disabled = true;
+
     const addressInput = document.getElementById("address-input");
     console.log(addressInput.value);
+
+    spinner.style.display = 'flex';
 
     const apiKey ="kk09WTbfHugG0JEXeKiRzQGezPdT6R_I";
     const baseURL = `https://eth-mainnet.g.alchemy.com/nft/v2/${apiKey}/getNFTs/`;
@@ -20,12 +53,16 @@ submitButton.addEventListener("click", function(){
     axios(config).then(function(response){
         console.log(response.data);
         
-
+        
 
 
           //table element
           const tableElement = document.createElement("div");
+          
+
           tableElement.classList.add('nft-row');
+          
+          
         
 
         for(let i=0; i< response.data.ownedNfts.length; i++){
@@ -71,6 +108,7 @@ submitButton.addEventListener("click", function(){
 
           console.log(nft.media[0].raw);
           const imgElement = document.createElement('img');
+          imgElement.classList.add('img');
           
           
           let urlImage = nft.media[0].gateway;
@@ -89,7 +127,7 @@ submitButton.addEventListener("click", function(){
           // nftBox.appendChild(nftBalanceBox);
           // nftBox.appendChild(nftDescBox);
           // grid.appendChild(nftBox);
-
+          
             // Append the img element to the cell element
             imageCellElement.appendChild(imgElement);
             // Append the cell elements to the row element
@@ -107,7 +145,14 @@ submitButton.addEventListener("click", function(){
         }
 
         // Append the table element to the nft-images-container element
-        document.getElementById("nft-images-container").appendChild(tableElement);
+        nftImagesContainer.appendChild(tableElement);
+        spinner.style.display = 'none';
+        spinnerContainer.style.display= 'none';
+        addressInput.value = '';
+
+
+        submitButton.disabled = false;
+
       });
       
       
