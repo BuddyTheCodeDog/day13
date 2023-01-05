@@ -113,7 +113,7 @@ submitButton.addEventListener("click", function(){
           
           let urlImage = nft.media[0].gateway;
 
-          if (urlImage.startsWith("ipfs://")) {
+          if (urlImage && urlImage.startsWith("ipfs://")) {
             urlImage = "https://ipfs.io/ipfs/" + urlImage.slice(8);
           }
           
