@@ -1,35 +1,38 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+function createAndPlayAudioElement(){
+    const audioElement = document.createElement('audio');
+    const audioContainer = document.getElementById('audio-container');
+    
+    // Set the src attribute of the audio element to the URL of the MP3 file
+    audioElement.src = 'https://cdn.pixabay.com/download/audio/2021/04/07/audio_8ed06844ef.mp3?filename=nightlife-michael-kobrin-95bpm-3783.mp3';
+    
+    // Set the controls attribute of the audio element to true
+    audioElement.controls = true;
+    // audioElement.autoplay = true;
+    // audioElement.loop = true;
+    
+    // Append the audio element to the body of the page
+    audioContainer.appendChild(audioElement);
+
+}
+
+module.exports = createAndPlayAudioElement
+},{}],2:[function(require,module,exports){
+function clearImagesContainer(nftImagesContainer){
+    while (nftImagesContainer.firstChild) {
+      nftImagesContainer.removeChild(nftImagesContainer.firstChild);
+      
+    }
+  
+  }
+
+  module.exports = clearImagesContainer
+},{}],3:[function(require,module,exports){
 "use strict";
 
 var _axios = _interopRequireDefault(require("axios"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-const audioElement = document.createElement('audio');
-const audioContainer = document.getElementById('audio-container');
-
-// Set the src attribute of the audio element to the URL of the MP3 file
-audioElement.src = 'https://cdn.pixabay.com/download/audio/2021/04/07/audio_8ed06844ef.mp3?filename=nightlife-michael-kobrin-95bpm-3783.mp3';
-
-// Set the controls attribute of the audio element to true
-audioElement.controls = true;
-audioElement.autoplay = true;
-audioElement.loop = true;
-
-// Append the audio element to the body of the page
-audioContainer.appendChild(audioElement);
-const submitButton = document.getElementById("submit-button");
-const spinner = document.getElementById('spinner');
-const spinnerContainer = document.getElementById('spinner-container');
-const nftImagesContainer = document.getElementById("nft-images-container");
-submitButton.addEventListener("click", function () {
-  while (nftImagesContainer.firstChild) {
-    nftImagesContainer.removeChild(nftImagesContainer.firstChild);
-    console.log("testing");
-  }
-  spinnerContainer.style.display = 'block';
-  submitButton.disabled = true;
-  const addressInput = document.getElementById("address-input");
-  console.log(addressInput.value);
-  spinner.style.display = 'flex';
+function getNfts(addressInput) {
   const apiKey = "kk09WTbfHugG0JEXeKiRzQGezPdT6R_I";
   const baseURL = `https://eth-mainnet.g.alchemy.com/nft/v2/${apiKey}/getNFTs/`;
   const ownerAddr = addressInput.value; //addressInput.value;
@@ -38,90 +41,67 @@ submitButton.addEventListener("click", function () {
     method: 'get',
     url: `${baseURL}?owner=${ownerAddr}`
   };
-  (0, _axios.default)(config).then(function (response) {
-    console.log(response.data);
+  return new Promise(function (resolve) {
+    (0, _axios.default)(config).then(function (response) {
+      resolve(response);
+    });
+  });
+}
+module.exports = getNfts;
 
-    //table element
+},{"axios":5}],4:[function(require,module,exports){
+
+//requires
+const renderNftToPage = require('./render');
+const getNfts = require('./getNfts');
+const createAndPlayAudioElement = require('./audio');
+const spinnerFunctions = require('./spinner');
+const clearImagesContainer = require('./clearImagesContainer')
+
+// create submitButton and NftImageContainer elements
+const submitButton = document.getElementById("submit-button");
+const nftImagesContainer = document.getElementById("nft-images-container");
+
+// create and play audio
+createAndPlayAudioElement();
+
+// button click function
+submitButton.addEventListener("click", function(){
+  
+  //create addressInput element
+  const addressInput = document.getElementById("address-input");
+
+  //clear ImageContainer , show loading spinner , disables submit button
+  clearImagesContainer(nftImagesContainer);
+  spinnerFunctions.showSpinner();
+  submitButton.disabled = true;
+
+  // gets nft array by address and then runs function to renders nft to page
+  getNfts(addressInput).then(function(response){
+
+    // creates tableElement element
     const tableElement = document.createElement("div");
     tableElement.classList.add('nft-row');
-    for (let i = 0; i < response.data.ownedNfts.length; i++) {
+
+    // loops through nft array and renders nft to page
+    for(let i=0; i< response.data.ownedNfts.length; i++){
       const nft = response.data.ownedNfts[i];
-      const nftName = nft.title;
-      console.log(nftName);
-
-      // Create a row element for each NFT
-      const colElement = document.createElement("div");
-      colElement.classList.add('nft-col');
-
-      // Create a container under image
-      const bottomContainer = document.createElement("div");
-      bottomContainer.classList.add('nft-bottom-container');
-      const bottomContainerDiv1 = document.createElement("div");
-      bottomContainerDiv1.classList.add('nft-bottom-container-div1');
-      const bottomContainerDiv2 = document.createElement("div");
-      bottomContainerDiv2.classList.add('nft-bottom-container-div2');
-
-      // Create a cell element for the NFT name
-      const nameCellElement = document.createElement("h3");
-      // Set the innerHTML of the cell element to the name of the NFT
-      nameCellElement.innerHTML = nftName;
-
-      // create a cell element for nft balance
-      const nftBalanceBox = document.createElement('div');
-      nftBalanceBox.className = 'item-balance';
-      const nftBalance = nft.balance;
-      nftBalanceBox.innerHTML = `Owned: ${nftBalance}`;
-
-      // const nftDescBox = document.createElement('span');
-      // nftDescBox.className = 'grid-item-description';
-      // const nftDesc = nft.description;
-      // nftDescBox.innerHTML = nftDesc;
-
-      //creates image Cell
-      const imageCellElement = document.createElement("div");
-      imageCellElement.classList.add('img-cell');
-      console.log(nft.media[0].raw);
-      const imgElement = document.createElement('img');
-      imgElement.classList.add('img');
-      let urlImage = nft.media[0].gateway;
-      if (urlImage && urlImage.startsWith("ipfs://")) {
-        urlImage = "https://ipfs.io/ipfs/" + urlImage.slice(8);
-      }
-      imgElement.src = urlImage;
-      imgElement.onerror = function () {
-        // Display placeholder image
-        this.src = 'https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-picture-icon-png-image_695350.jpg';
-      };
-
-      // nftBox.appendChild(nftBalanceBox);
-      // nftBox.appendChild(nftDescBox);
-      // grid.appendChild(nftBox);
-
-      // Append the img element to the cell element
-      imageCellElement.appendChild(imgElement);
-      // Append the cell elements to the row element
-      bottomContainer.appendChild(nameCellElement);
-      bottomContainer.appendChild(nftBalanceBox);
-      colElement.appendChild(imageCellElement);
-
-      // bottomContainer.appendChild(bottomContainerDiv1);
-      // bottomContainer.appendChild(bottomContainerDiv2);
-      colElement.appendChild(bottomContainer);
-
-      // Append the row element to the table element
-      tableElement.appendChild(colElement);
+      renderNftToPage(nft,tableElement);
     }
-
-    // Append the table element to the nft-images-container element
+    
+    // Appends the table element to the nftImagesContainer element
     nftImagesContainer.appendChild(tableElement);
-    spinner.style.display = 'none';
-    spinnerContainer.style.display = 'none';
+
+    //hides spinner, resets addressInput and enables Submit Button
+    spinnerFunctions.hideSpinner();
     addressInput.value = '';
     submitButton.disabled = false;
-  });
+
+    });   
 });
 
-},{"axios":2}],2:[function(require,module,exports){
+    
+},{"./audio":1,"./clearImagesContainer":2,"./getNfts":3,"./render":51,"./spinner":52}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -171,7 +151,7 @@ exports.CanceledError = CanceledError;
 exports.AxiosError = AxiosError;
 exports.Axios = Axios;
 
-},{"./lib/axios.js":5}],3:[function(require,module,exports){
+},{"./lib/axios.js":8}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -230,7 +210,7 @@ var _default = {
 };
 exports.default = _default;
 
-},{"../core/AxiosError.js":10,"../utils.js":43,"./http.js":31,"./xhr.js":4}],4:[function(require,module,exports){
+},{"../core/AxiosError.js":13,"../utils.js":46,"./http.js":34,"./xhr.js":7}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -457,7 +437,7 @@ var _default = isXHRAdapterSupported && function (config) {
 };
 exports.default = _default;
 
-},{"../cancel/CanceledError.js":7,"../core/AxiosError.js":10,"../core/AxiosHeaders.js":11,"../core/buildFullPath.js":13,"../defaults/transitional.js":19,"../helpers/parseProtocol.js":33,"../helpers/speedometer.js":34,"../platform/index.js":42,"./../core/settle.js":16,"./../helpers/buildURL.js":24,"./../helpers/cookies.js":26,"./../helpers/isURLSameOrigin.js":30,"./../utils.js":43}],5:[function(require,module,exports){
+},{"../cancel/CanceledError.js":10,"../core/AxiosError.js":13,"../core/AxiosHeaders.js":14,"../core/buildFullPath.js":16,"../defaults/transitional.js":22,"../helpers/parseProtocol.js":36,"../helpers/speedometer.js":37,"../platform/index.js":45,"./../core/settle.js":19,"./../helpers/buildURL.js":27,"./../helpers/cookies.js":29,"./../helpers/isURLSameOrigin.js":33,"./../utils.js":46}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -546,7 +526,7 @@ axios.default = axios;
 var _default = axios;
 exports.default = _default;
 
-},{"./cancel/CancelToken.js":6,"./cancel/CanceledError.js":7,"./cancel/isCancel.js":8,"./core/Axios.js":9,"./core/AxiosError.js":10,"./core/AxiosHeaders.js":11,"./core/mergeConfig.js":15,"./defaults/index.js":18,"./env/data.js":21,"./helpers/bind.js":23,"./helpers/formDataToJSON.js":27,"./helpers/isAxiosError.js":29,"./helpers/spread.js":35,"./helpers/toFormData.js":36,"./utils.js":43}],6:[function(require,module,exports){
+},{"./cancel/CancelToken.js":9,"./cancel/CanceledError.js":10,"./cancel/isCancel.js":11,"./core/Axios.js":12,"./core/AxiosError.js":13,"./core/AxiosHeaders.js":14,"./core/mergeConfig.js":18,"./defaults/index.js":21,"./env/data.js":24,"./helpers/bind.js":26,"./helpers/formDataToJSON.js":30,"./helpers/isAxiosError.js":32,"./helpers/spread.js":38,"./helpers/toFormData.js":39,"./utils.js":46}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -663,7 +643,7 @@ class CancelToken {
 var _default = CancelToken;
 exports.default = _default;
 
-},{"./CanceledError.js":7}],7:[function(require,module,exports){
+},{"./CanceledError.js":10}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -693,7 +673,7 @@ _utils.default.inherits(CanceledError, _AxiosError.default, {
 var _default = CanceledError;
 exports.default = _default;
 
-},{"../core/AxiosError.js":10,"../utils.js":43}],8:[function(require,module,exports){
+},{"../core/AxiosError.js":13,"../utils.js":46}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -704,7 +684,7 @@ function isCancel(value) {
   return !!(value && value.__CANCEL__);
 }
 
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -878,7 +858,7 @@ _utils.default.forEach(['post', 'put', 'patch'], function forEachMethodWithData(
 var _default = Axios;
 exports.default = _default;
 
-},{"../helpers/buildURL.js":24,"../helpers/validator.js":38,"./../utils.js":43,"./AxiosHeaders.js":11,"./InterceptorManager.js":12,"./buildFullPath.js":13,"./dispatchRequest.js":14,"./mergeConfig.js":15}],10:[function(require,module,exports){
+},{"../helpers/buildURL.js":27,"../helpers/validator.js":41,"./../utils.js":46,"./AxiosHeaders.js":14,"./InterceptorManager.js":15,"./buildFullPath.js":16,"./dispatchRequest.js":17,"./mergeConfig.js":18}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -964,7 +944,7 @@ AxiosError.from = (error, code, config, request, response, customProps) => {
 var _default = AxiosError;
 exports.default = _default;
 
-},{"../utils.js":43}],11:[function(require,module,exports){
+},{"../utils.js":46}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1172,7 +1152,7 @@ _utils.default.freezeMethods(AxiosHeaders);
 var _default = AxiosHeaders;
 exports.default = _default;
 
-},{"../helpers/parseHeaders.js":32,"../utils.js":43}],12:[function(require,module,exports){
+},{"../helpers/parseHeaders.js":35,"../utils.js":46}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1249,7 +1229,7 @@ class InterceptorManager {
 var _default = InterceptorManager;
 exports.default = _default;
 
-},{"./../utils.js":43}],13:[function(require,module,exports){
+},{"./../utils.js":46}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1276,7 +1256,7 @@ function buildFullPath(baseURL, requestedURL) {
   return requestedURL;
 }
 
-},{"../helpers/combineURLs.js":25,"../helpers/isAbsoluteURL.js":28}],14:[function(require,module,exports){
+},{"../helpers/combineURLs.js":28,"../helpers/isAbsoluteURL.js":31}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1344,7 +1324,7 @@ function dispatchRequest(config) {
   });
 }
 
-},{"../adapters/adapters.js":3,"../cancel/CanceledError.js":7,"../cancel/isCancel.js":8,"../core/AxiosHeaders.js":11,"../defaults/index.js":18,"./transformData.js":17}],15:[function(require,module,exports){
+},{"../adapters/adapters.js":6,"../cancel/CanceledError.js":10,"../cancel/isCancel.js":11,"../core/AxiosHeaders.js":14,"../defaults/index.js":21,"./transformData.js":20}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1453,7 +1433,7 @@ function mergeConfig(config1, config2) {
   return config;
 }
 
-},{"../utils.js":43,"./AxiosHeaders.js":11}],16:[function(require,module,exports){
+},{"../utils.js":46,"./AxiosHeaders.js":14}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1480,7 +1460,7 @@ function settle(resolve, reject, response) {
   }
 }
 
-},{"./AxiosError.js":10}],17:[function(require,module,exports){
+},{"./AxiosError.js":13}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1511,7 +1491,7 @@ function transformData(fns, response) {
   return data;
 }
 
-},{"../core/AxiosHeaders.js":11,"../defaults/index.js":18,"./../utils.js":43}],18:[function(require,module,exports){
+},{"../core/AxiosHeaders.js":14,"../defaults/index.js":21,"./../utils.js":46}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1649,7 +1629,7 @@ _utils.default.forEach(['post', 'put', 'patch'], function forEachMethodWithData(
 var _default = defaults;
 exports.default = _default;
 
-},{"../core/AxiosError.js":10,"../helpers/formDataToJSON.js":27,"../helpers/toFormData.js":36,"../helpers/toURLEncodedForm.js":37,"../platform/index.js":42,"../utils.js":43,"./transitional.js":19}],19:[function(require,module,exports){
+},{"../core/AxiosError.js":13,"../helpers/formDataToJSON.js":30,"../helpers/toFormData.js":39,"../helpers/toURLEncodedForm.js":40,"../platform/index.js":45,"../utils.js":46,"./transitional.js":22}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1663,7 +1643,7 @@ var _default = {
 };
 exports.default = _default;
 
-},{}],20:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1675,7 +1655,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var _default = _formData.default;
 exports.default = _default;
 
-},{"form-data":46}],21:[function(require,module,exports){
+},{"form-data":49}],24:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1685,7 +1665,7 @@ exports.VERSION = void 0;
 const VERSION = "1.2.1";
 exports.VERSION = VERSION;
 
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1744,7 +1724,7 @@ prototype.toString = function toString(encoder) {
 var _default = AxiosURLSearchParams;
 exports.default = _default;
 
-},{"./toFormData.js":36}],23:[function(require,module,exports){
+},{"./toFormData.js":39}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1757,7 +1737,7 @@ function bind(fn, thisArg) {
   };
 }
 
-},{}],24:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1811,7 +1791,7 @@ function buildURL(url, params, options) {
   return url;
 }
 
-},{"../helpers/AxiosURLSearchParams.js":22,"../utils.js":43}],25:[function(require,module,exports){
+},{"../helpers/AxiosURLSearchParams.js":25,"../utils.js":46}],28:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1830,7 +1810,7 @@ function combineURLs(baseURL, relativeURL) {
   return relativeURL ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '') : baseURL;
 }
 
-},{}],26:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1882,7 +1862,7 @@ function nonStandardBrowserEnv() {
 }();
 exports.default = _default;
 
-},{"../platform/index.js":42,"./../utils.js":43}],27:[function(require,module,exports){
+},{"../platform/index.js":45,"./../utils.js":46}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1970,7 +1950,7 @@ function formDataToJSON(formData) {
 var _default = formDataToJSON;
 exports.default = _default;
 
-},{"../utils.js":43}],28:[function(require,module,exports){
+},{"../utils.js":46}],31:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1991,7 +1971,7 @@ function isAbsoluteURL(url) {
   return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
 }
 
-},{}],29:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2011,7 +1991,7 @@ function isAxiosError(payload) {
   return _utils.default.isObject(payload) && payload.isAxiosError === true;
 }
 
-},{"./../utils.js":43}],30:[function(require,module,exports){
+},{"./../utils.js":46}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2077,7 +2057,7 @@ function nonStandardBrowserEnv() {
 }();
 exports.default = _default;
 
-},{"../platform/index.js":42,"./../utils.js":43}],31:[function(require,module,exports){
+},{"../platform/index.js":45,"./../utils.js":46}],34:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2088,7 +2068,7 @@ exports.default = void 0;
 var _default = null;
 exports.default = _default;
 
-},{}],32:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2141,7 +2121,7 @@ var _default = rawHeaders => {
 };
 exports.default = _default;
 
-},{"./../utils.js":43}],33:[function(require,module,exports){
+},{"./../utils.js":46}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2153,7 +2133,7 @@ function parseProtocol(url) {
   return match && match[1] || '';
 }
 
-},{}],34:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2202,7 +2182,7 @@ function speedometer(samplesCount, min) {
 var _default = speedometer;
 exports.default = _default;
 
-},{}],35:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2236,7 +2216,7 @@ function spread(callback) {
   };
 }
 
-},{}],36:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function (Buffer){(function (){
 'use strict';
 
@@ -2442,7 +2422,7 @@ var _default = toFormData;
 exports.default = _default;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"../core/AxiosError.js":10,"../env/classes/FormData.js":20,"../utils.js":43,"buffer":45}],37:[function(require,module,exports){
+},{"../core/AxiosError.js":13,"../env/classes/FormData.js":23,"../utils.js":46,"buffer":48}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2465,7 +2445,7 @@ function toURLEncodedForm(data, options) {
   }, options));
 }
 
-},{"../platform/index.js":42,"../utils.js":43,"./toFormData.js":36}],38:[function(require,module,exports){
+},{"../platform/index.js":45,"../utils.js":46,"./toFormData.js":39}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2551,7 +2531,7 @@ var _default = {
 };
 exports.default = _default;
 
-},{"../core/AxiosError.js":10,"../env/data.js":21}],39:[function(require,module,exports){
+},{"../core/AxiosError.js":13,"../env/data.js":24}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2561,7 +2541,7 @@ exports.default = void 0;
 var _default = FormData;
 exports.default = _default;
 
-},{}],40:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2573,7 +2553,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var _default = typeof URLSearchParams !== 'undefined' ? URLSearchParams : _AxiosURLSearchParams.default;
 exports.default = _default;
 
-},{"../../../helpers/AxiosURLSearchParams.js":22}],41:[function(require,module,exports){
+},{"../../../helpers/AxiosURLSearchParams.js":25}],44:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2633,7 +2613,7 @@ var _default = {
 };
 exports.default = _default;
 
-},{"./classes/FormData.js":39,"./classes/URLSearchParams.js":40}],42:[function(require,module,exports){
+},{"./classes/FormData.js":42,"./classes/URLSearchParams.js":43}],45:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2648,7 +2628,7 @@ Object.defineProperty(exports, "default", {
 var _index = _interopRequireDefault(require("./node/index.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./node/index.js":41}],43:[function(require,module,exports){
+},{"./node/index.js":44}],46:[function(require,module,exports){
 (function (global){(function (){
 'use strict';
 
@@ -3294,7 +3274,7 @@ var _default = {
 exports.default = _default;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./helpers/bind.js":23}],44:[function(require,module,exports){
+},{"./helpers/bind.js":26}],47:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -3446,7 +3426,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],45:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
@@ -5227,11 +5207,11 @@ function numberIsNaN (obj) {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"base64-js":44,"buffer":45,"ieee754":47}],46:[function(require,module,exports){
+},{"base64-js":47,"buffer":48,"ieee754":50}],49:[function(require,module,exports){
 /* eslint-env browser */
 module.exports = typeof self == 'object' ? self.FormData : window.FormData;
 
-},{}],47:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
@@ -5318,4 +5298,112 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}]},{},[1]);
+},{}],51:[function(require,module,exports){
+
+function convertUrlImage(urlImage){
+    if (urlImage && urlImage.startsWith("ipfs://")) {
+               return "https://ipfs.io/ipfs/" + urlImage.slice(8);
+            } else {
+              return urlImage;
+            }
+  
+  }
+
+function renderNftToPage(nft, tableElement){
+    const nftName = nft.title;
+            console.log(nftName);
+  
+  
+            // Create a row element for each NFT
+            const colElement = document.createElement("div");
+            colElement.classList.add('nft-col');
+  
+            // Create a container under image
+            const bottomContainer = document.createElement("div");
+            bottomContainer.classList.add('nft-bottom-container');
+  
+            const bottomContainerDiv1 = document.createElement("div");
+            bottomContainerDiv1.classList.add('nft-bottom-container-div1');
+  
+            const bottomContainerDiv2 = document.createElement("div");
+            bottomContainerDiv2.classList.add('nft-bottom-container-div2');
+  
+            // Create a cell element for the NFT name
+            const nameCellElement = document.createElement("h3");
+            // Set the innerHTML of the cell element to the name of the NFT
+            nameCellElement.innerHTML = nftName;
+  
+            
+            // create a cell element for nft balance
+            const nftBalanceBox = document.createElement('div');
+            nftBalanceBox.className = 'item-balance';
+            const nftBalance = nft.balance;
+            nftBalanceBox.innerHTML = `Owned: ${nftBalance}`;
+  
+            // const nftDescBox = document.createElement('span');
+            // nftDescBox.className = 'grid-item-description';
+            // const nftDesc = nft.description;
+            // nftDescBox.innerHTML = nftDesc;
+  
+            //creates image Cell
+            const imageCellElement = document.createElement("div");
+              imageCellElement.classList.add('img-cell');
+  
+            console.log(nft.media[0].raw);
+            const imgElement = document.createElement('img');
+            imgElement.classList.add('img');
+            
+            // covert url image ipfs issue
+            const urlImage = convertUrlImage(nft.media[0].gateway);
+  
+            
+            
+            
+            imgElement.src = urlImage;
+            imgElement.onerror = function() {
+              // Display placeholder image
+              this.src = 'https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-picture-icon-png-image_695350.jpg';
+            };
+            
+            // nftBox.appendChild(nftBalanceBox);
+            // nftBox.appendChild(nftDescBox);
+            // grid.appendChild(nftBox);
+            
+              // Append the img element to the cell element
+              imageCellElement.appendChild(imgElement);
+              // Append the cell elements to the row element
+              bottomContainer.appendChild(nameCellElement);
+              bottomContainer.appendChild(nftBalanceBox);
+              
+              colElement.appendChild(imageCellElement);
+  
+              // bottomContainer.appendChild(bottomContainerDiv1);
+              // bottomContainer.appendChild(bottomContainerDiv2);
+              colElement.appendChild(bottomContainer);
+  
+              // Append the row element to the table element
+              tableElement.appendChild(colElement);
+  }
+
+  module.exports = renderNftToPage
+},{}],52:[function(require,module,exports){
+const spinner = document.getElementById('spinner');
+const spinnerContainer = document.getElementById('spinner-container');
+
+function showSpinner(){
+    spinnerContainer.style.display= 'block';
+    spinner.style.display = 'flex';
+  }
+  
+  function hideSpinner() {
+    spinner.style.display = 'none';
+    spinnerContainer.style.display= 'none';
+    console.log('teset');
+  
+  }
+
+  module.exports = {
+    showSpinner: showSpinner,
+    hideSpinner: hideSpinner
+  };
+},{}]},{},[4]);
