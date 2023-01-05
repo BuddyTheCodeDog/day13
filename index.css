@@ -52,6 +52,7 @@
   border-top-right-radius: 6px;
   max-height: 100%;
   object-fit: contain;
+  aspect-ratio: 1/1;
 }
 
 /* .img-cell {
@@ -148,6 +149,12 @@
 
 #spinner-container{
   margin: 40px;
+}
+
+@media screen and (min-width: 601px) {
+  .nft-col{  
+  height: 286px;
+  }
 }
 
 .spinner {
