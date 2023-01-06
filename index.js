@@ -1,7 +1,6 @@
 //requires
 const createAndPlayAudioElement = require('./audio');
 const startNftRenderProcess = require('./startNftRenderProcess');
-const ethers = require("ethers");
 
 // create submitButton and NftImageContainer elements
 const submitButton = document.getElementById("submit-button");
