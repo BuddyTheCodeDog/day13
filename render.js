@@ -48,22 +48,22 @@ function renderNftToPage(nft, tableElement,i){
 
               //collectionName
               const collectionName = nft.contractMetadata.openSea.collectionName;
-              const collectionNameContainer = document.getElementById('collection-name-container');
-              collectionNameContainer.innerHTML = `Collection Name: ${collectionName}`;
+              const collectionNameContainer = document.getElementById('collection-name');
+              collectionNameContainer.innerHTML = `${collectionName}`;
 
               //description
               const descriptionOpensea = nft.contractMetadata.openSea.description;
-              const descriptionOpenseaContainer = document.getElementById('description-container');
-              descriptionOpenseaContainer.innerHTML = `Description: ${descriptionOpensea}`;
+              const descriptionOpenseaContainer = document.getElementById('description');
+              descriptionOpenseaContainer.innerHTML = `${descriptionOpensea}`;
               //floorPrice
               const floorPrice = nft.contractMetadata.openSea.floorPrice;
-              const floorPriceContainer = document.getElementById('floor-price-container');
-              floorPriceContainer.innerHTML = `Floor Price: ${floorPrice} ETH`;
+              const floorPriceContainer = document.getElementById('floor-price');
+              floorPriceContainer.innerHTML = `${floorPrice} ETH`;
 
               //twitterUsername
               const twitterUsername = nft.contractMetadata.openSea.twitterUsername;
-              const twitterUsernameContainer = document.getElementById('twitter-username-container');
-              twitterUsernameContainer.innerHTML = `Twitter: @${twitterUsername}`;
+              const twitterUsernameContainer = document.getElementById('twitter-username');
+              twitterUsernameContainer.innerHTML = `@${twitterUsername}`;
 
               
               // modalContent.appendChild(collectionNameContainer);

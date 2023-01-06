@@ -17,13 +17,28 @@
             <!-- Modal content -->
             <div id= "modal-content-container" class="modal-content">
               <span class="close">&times;</span>
-              <div id="nft-name-container"></div>
-              <img id="modal-img" class="img"> 
-              <div id="nft-description-container"></div>
-              <div id="collection-name-container"></div>
-              <div id="description-container"></div>
-              <div id="floor-price-container"></div>
-              <div id="twitter-username-container"></div>
+              <div class="modal-label" id="nft-name-container"></div>
+              <div class="modal-img-container">
+                <img id="modal-img" class="img"> 
+              </div>
+               
+              
+              <div id="collection-name-container" class="modal-container">
+                <div class="modal-label">Collection Name: </div>
+                <div id="collection-name" class="content"></div>
+              </div>
+              <div id="description-container" class="modal-container">
+                <div class="modal-label">Description: </div>
+                <div id="description" class="content"></div>
+              </div>
+              <div id="floor-price-container" class="modal-container">
+                <div class="modal-label">Floor price: </div>
+                <div id="floor-price" class="content"></div>
+              </div>
+              <div id="twitter-username-container" class="modal-container">
+                <div class="modal-label">Twitter: </div>
+                <div id="twitter-username" class="content"></div>
+              </div>
             </div>
           
           </div>
@@ -38,9 +53,13 @@
             <input class="input-default" id="address-input" placeholder="Enter ETH Address" type="text" />
             <button class="button-default" id="submit-button">Submit</button>
             
+            
         </div>
         
+        <div id="wrong-address-container"></div>
+
         <div id="spinner-container">
+            
             <div class="spinner" id="spinner"></div>
         </div>
         
