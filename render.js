@@ -8,7 +8,7 @@ function convertUrlImage(urlImage){
   
   }
 
-function renderNftToPage(nft, tableElement){
+function renderNftToPage(nft, tableElement,i){
     const nftName = nft.title;
             console.log(nftName);
   
@@ -16,6 +16,72 @@ function renderNftToPage(nft, tableElement){
             // Create a row element for each NFT
             const colElement = document.createElement("div");
             colElement.classList.add('nft-col');
+            colElement.dataset.nftIndex = i;
+
+            // nft click modal
+            colElement.onclick = function(){
+
+              console.log('clicked ', colElement.dataset.nftIndex);
+              console.log(nft);
+              
+              const modal = document.getElementById('myModal');
+              modal.style.display = "block";
+
+              window.onclick = function(event) {
+                if (event.target == modal) {
+                  modal.style.display = "none";
+                }
+              }
+              
+              var span = document.getElementsByClassName("close")[0];
+              span.onclick = function() {
+                modal.style.display = "none";
+              }
+              
+              const modalContent = document.getElementById('modal-content-container');
+              const modalImg = document.getElementById('modal-img');
+              modalImg.src = urlImage;
+
+              //modal nft name
+              const nftNameContainer = document.getElementById('nft-name-container');
+              nftNameContainer.innerHTML = nftName;
+
+              //collectionName
+              const collectionName = nft.contractMetadata.openSea.collectionName;
+              const collectionNameContainer = document.getElementById('collection-name-container');
+              collectionNameContainer.innerHTML = `Collection Name: ${collectionName}`;
+
+              //description
+              const descriptionOpensea = nft.contractMetadata.openSea.description;
+              const descriptionOpenseaContainer = document.getElementById('description-container');
+              descriptionOpenseaContainer.innerHTML = `Description: ${descriptionOpensea}`;
+              //floorPrice
+              const floorPrice = nft.contractMetadata.openSea.floorPrice;
+              const floorPriceContainer = document.getElementById('floor-price-container');
+              floorPriceContainer.innerHTML = `Floor Price: ${floorPrice} ETH`;
+
+              //twitterUsername
+              const twitterUsername = nft.contractMetadata.openSea.twitterUsername;
+              const twitterUsernameContainer = document.getElementById('twitter-username-container');
+              twitterUsernameContainer.innerHTML = `Twitter: @${twitterUsername}`;
+
+              
+              // modalContent.appendChild(collectionNameContainer);
+              // modalContent.appendChild(descriptionOpenseaContainer);
+              // modalContent.appendChild(floorPriceContainer);
+              // modalContent.appendChild(twitterUsernameContainer);
+
+            
+
+
+
+
+
+
+
+
+
+            }
   
             // Create a container under image
             const bottomContainer = document.createElement("div");

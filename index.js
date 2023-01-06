@@ -15,7 +15,7 @@ createAndPlayAudioElement();
 
 // button click function
 submitButton.addEventListener("click", function(){
-  
+
   //create addressInput element
   const addressInput = document.getElementById("address-input");
 
@@ -34,7 +34,7 @@ submitButton.addEventListener("click", function(){
     // loops through nft array and renders nft to page
     for(let i=0; i< response.data.ownedNfts.length; i++){
       const nft = response.data.ownedNfts[i];
-      renderNftToPage(nft,tableElement);
+      renderNftToPage(nft,tableElement,i);
     }
     
     // Appends the table element to the nftImagesContainer element
